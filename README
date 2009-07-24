@@ -1,0 +1,140 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=2720
+
+(Scroll down to see the install details.)
+
+Note: if you have a bug to report, please do so with the issue tracker at http://bitbucket.org/fallintothis/arc-vim/issues/ since I probably won't respond to emails.
+
+I've only tested this on Vim 7.2.  I have no idea (one way or the other) how backwards-compatible it is.
+
+SYNTAX:
+
+The following options are available for customizing the Arc highlighter.  They work well in conjunction with the accompanying Arc ftplugin options (see below).
+
+- g:arc_rainbow
+
+If this variable is nonzero, then matching pairs of parentheses will highlight in 10 different rainbow colors.  If this variable is 0, then rainbow colors are gone; it's just normal parentheses and quasiquoted parentheses.
+
+- g:arc_always_atstrings
+
+In Arc 3, there is an option to enable string interpolation of arbitrary expressions using at-signs by saying
+  
+  (declare 'atstrings t)
+
+Then, for instance, "1 + 2 = @(+ 1 2)" is the same as "1 + 2 = 3".  If g:arc_always_atstrings is nonzero, then expressions after the @-symbol inside of strings will be highlighted like normal code, as though you had (declare 'atstrings t).  If this variable is 0, then atstrings will not highlight.
+
+If you want more intelligent control over atstring highlighting, check out the accompanying ftplugin options below.
+
+EXAMPLE:
+
+You could put
+
+  let g:arc_always_atstrings=1
+
+in your .vimrc, and whenever you were highlighting an Arc file, atstrings would highlight, but parentheses would be colored normally (non-rainbow), since you don't have to explicitly set either variable to 0.  If they don't exist, they'll do nothing anyways.
+
+FTPLUGIN:
+
+The following options are available for customizing the Arc ftplugin.  They are meant to work in conjunction with the accompanying Arc syntax highlighter (see above).
+
+- g:arc_detect_atstrings
+
+In Arc 3, there is an option to enable string interpolation of arbitrary expressions using at-signs by saying
+  
+  (declare 'atstrings t)
+
+Then, for instance, "1 + 2 = @(+ 1 2)" is the same as "1 + 2 = 3".  If g:arc_detect_atstrings is nonzero, then expressions after the @-symbol inside of strings will be highlighted like normal code according to the following cases:
+
+  - if a form that will enable atstrings, like
+      (declare 'atstrings t)
+    is in the source code, highlight expressions after @-symbols
+
+  - if a form that will disable atstrings, like
+      (declare 'atstrings nil)
+    is in the source code, do not highlight expressions after @-symbols
+
+  - if there are multiple forms that contradict each other (enabling
+    atstrings in one place while disabling them in another), then be safe and
+    do not highlight expressions after @-symbols.
+
+This option can be used as an alternative to g:arc_always_atstrings, which is found in the Arc syntax highlighter (see above).  If, however, g:arc_always_atstrings is nonzero, it will take precedence over g:arc_detect_atstrings and always highlight atstrings.  When g:arc_always_atstrings is 0, behavior is dictated by g:arc_detect_atstrings.
+
+Changes in highlighting are triggered whenever you write to the file.  If you change, say
+
+  (declare 'atstrings t)
+
+to
+
+  (declare 'atstrings nil)
+
+then :w, the atstring highlighting will be turned off.
+
+- g:arc_bodops
+
+IMPORTANT: This feature is currently available only if your Vim installation has +python support.  See :h python
+
+If this variable is nonzero, then on every file write your source code is inspected in an attempt to find top-level macro definitions that have body parameters.  That is, 
+
+  (mac foo (vars vals . body)
+    something)
+
+will be detected, because it is a macro that takes a rest parameter named "body".  Whereas
+
+  (def foo (a b . body)
+    something)
+
+will not, because it's not a macro definition, and
+
+  (def make-macro (name)
+    `(mac ,name body (pr "stuff")))
+
+will not recognize the quasiquoted macro definition, even though it takes a body parameter.
+
+The name of each macro found in this way will be added to the &lispwords variable.  Then, with auto-indentation, the macro
+
+  (mac foo body
+    bar)
+
+will indent like
+
+  (foo a
+    b
+    c)
+
+instead of
+
+  (foo a
+       b
+       c)
+
+(Sorry; that probably doesn't look right in a non-fixed-width font.)  This can be useful for macros that you define to be syntactic forms, much like how, say, looping constructs are defined in Arc itself.
+
+- g:arc_highlight_lispwords
+
+If nonzero, every word in the &lispwords variable will highlight as though it were syntax.  The highlighting is updated every time you write to the file.  This can be useful in conjunction with g:arc_bodops, so that after you write the macro
+
+  (mac my-each (x xs . body)
+    ...do stuff...)
+
+each occurrence of "my-each" will be highlighted & indented just like the "each" macro.  You can even add words you want to be highlighted & indented by going
+
+  :setl lispwords+=foo
+
+This lispword will then persist across file-writes, even if you've not defined a "foo" macro.
+
+Most of these extra features are useless without the accompanying Arc syntax highlighter, so you probably want to use it if you use these features.
+
+EXAMPLE:
+
+You could put
+
+  let g:arc_detect_atstrings=1
+  let g:arc_bodops=1
+  let g:arc_highlight_lispwords=1
+
+in your .vimrc, and when using the Arc syntax highlighter you can test, say, news.arc and see that:
+
+  - atstrings are highlighted, as there is a positive declaration at the top of the source
+  
+  - macros like "adop" and "edop" are highlighted & auto-indented as lispwords
+
+  - but the macro "newsop" isn't highlighted or auto-indented, because its rest parameter is named "args".  So, you can :setl lw+=newsop and :w to see "newsop" become highlighted.
