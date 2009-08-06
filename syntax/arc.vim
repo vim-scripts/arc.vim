@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:    Arc <http://arclanguage.org/>
 " Maintainer:  ajv
-" Last Change: July 24, 2009
+" Last Change: August 6, 2009
 " URL:         http://bitbucket.org/fallintothis/arc-vim/issues/
 "
 " Options:
@@ -23,7 +23,7 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-setlocal iskeyword=35,36,37,38,42,43,45,47,48,49,50,51,52,53,54,55,56,57,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,92,94,95,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122
+setlocal iskeyword=35,36,37,42,43,45,47,48,49,50,51,52,53,54,55,56,57,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,92,94,95,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122
 
 syn case ignore
 
@@ -35,8 +35,8 @@ syn cluster arcListCluster contains=TOP,arcParenError,arcParen0,arcParen1,arcPar
 syn match arcIdent display /[^\()[\]'`,"; \t|]\+/ contains=arcSsyntax,arcFn,arcVar,arcGlobal,arcNonfloat 
 syn match arcIdent display "|..\{-}|" contains=arcSsyntax,arcFn,arcVar,arcGlobal,arcNonfloat 
 
-syn match arcSsyntax display "[:~.+!]" 
-syn match arcSsyntax display /![^\()[\]'`,"; \t|:~.+!]\+/ 
+syn match arcSsyntax display "[:~&.!]" 
+syn match arcSsyntax display /![^\()[\]'`,"; \t|:~&.!]\+/ 
 syn match arcSsyntax display "!|..\{-}|" 
 
 "-------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ syn keyword arcFn ero
 syn keyword arcFn err
 syn keyword arcFn errpage
 syn keyword arcFn errsafe
-syn keyword arcFn esc<>&
+syn keyword arcFn esc-tags
 syn keyword arcFn eschtml
 syn keyword arcFn eval
 syn keyword arcFn even
@@ -415,6 +415,7 @@ syn keyword arcFn onlink
 syn keyword arcFn only
 syn keyword arcFn onrlink
 syn keyword arcFn ontree
+syn keyword arcFn opcheck
 syn keyword arcFn opcolor
 syn keyword arcFn open-socket
 syn keyword arcFn opendelim
@@ -537,6 +538,7 @@ syn keyword arcFn serve1
 syn keyword arcFn set
 syn keyword arcFn set-pw
 syn keyword arcFn setforms
+syn keyword arcFn setuid
 syn keyword arcFn shash
 syn keyword arcFn shortlink
 syn keyword arcFn showvars
@@ -546,6 +548,7 @@ syn keyword arcFn since
 syn keyword arcFn single
 syn keyword arcFn single-input
 syn keyword arcFn sleep
+syn keyword arcFn slices
 syn keyword arcFn socket-accept
 syn keyword arcFn some
 syn keyword arcFn sort
@@ -581,6 +584,7 @@ syn keyword arcFn t
 syn keyword arcFn tab
 syn keyword arcFn table
 syn keyword arcFn tablist
+syn keyword arcFn taform
 syn keyword arcFn tag
 syn keyword arcFn tag-if
 syn keyword arcFn tag-options
@@ -601,7 +605,6 @@ syn keyword arcFn thread
 syn keyword arcFn throw
 syn keyword arcFn time
 syn keyword arcFn time10
-syn keyword arcFn timed-aform
 syn keyword arcFn timed-fnid
 syn keyword arcFn timedate
 syn keyword arcFn todisk
@@ -643,6 +646,7 @@ syn keyword arcFn username-taken
 syn keyword arcFn valid-date
 syn keyword arcFn valid-url
 syn keyword arcFn vals
+syn keyword arcFn varcompare
 syn keyword arcFn varfield
 syn keyword arcFn varline
 syn keyword arcFn vars-form
@@ -690,7 +694,7 @@ syn keyword arcFn zerotable
 "-------------------------------------------------------------------------------
 " Variables:
 
-syn match arcGlobal display /[^\()[\]'`,"; \t|:~.+!]\+\*/ 
+syn match arcGlobal display /[^\()[\]'`,"; \t|:~&.!]\+\*/ 
 
 syn keyword arcVar adminfile*
 syn keyword arcVar appdir*
@@ -709,7 +713,6 @@ syn keyword arcVar darkred
 syn keyword arcVar dc-usernames*
 syn keyword arcVar dead-msg*
 syn keyword arcVar dos-window*
-syn keyword arcVar fail*
 syn keyword arcVar fnids*
 syn keyword arcVar fns*
 syn keyword arcVar fnurl*
@@ -792,10 +795,10 @@ endif
 "-------------------------------------------------------------------------------
 " Numbers:
 
-syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~.+!]\)\@<=\%(#b\%(#[ie]\)\=\|\%(#[ie]\)\=#b\)\%([+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)@[+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\=[+-]\%(\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~.+!]\)? 
-syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~.+!]\)\@<=\%(#o\%(#[ie]\)\=\|\%(#[ie]\)\=#o\)\%([+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)@[+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\=[+-]\%(\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~.+!]\)? 
-syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~.+!]\)\@<=\%(\%(#d\)\=\%(#[ie]\)\=\|\%(#[ie]\)\=\%(#d\)\=\)\%([+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\|[+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)@[+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\|[+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\=[+-]\%(\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~.+!]\)? 
-syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~.+!]\)\@<=\%(#x\%(#[ie]\)\=\|\%(#[ie]\)\=#x\)\%([+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\|[+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)@[+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\|[+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\=[+-]\%(\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~.+!]\)? 
+syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~&.!]\)\@<=\%(#b\%(#[ie]\)\=\|\%(#[ie]\)\=#b\)\%([+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)@[+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\=[+-]\%(\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~&.!]\)? 
+syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~&.!]\)\@<=\%(#o\%(#[ie]\)\=\|\%(#[ie]\)\=#o\)\%([+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)@[+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\=[+-]\%(\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\o\+#*\%([esfdl][+-]\=\o\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~&.!]\)? 
+syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~&.!]\)\@<=\%(\%(#d\)\=\%(#[ie]\)\=\|\%(#[ie]\)\=\%(#d\)\=\)\%([+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\|[+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)@[+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\|[+-]\=\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\=[+-]\%(\%(\d\+#*/\d\+#*\%([esfdl][+-]\=\d\+\)\=\|\d\+#*\%([esfdl][+-]\=\d\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~&.!]\)? 
+syn match arcNonfloat contained display ?\%(^\|[\()[\]'`,"; \t|:~&.!]\)\@<=\%(#x\%(#[ie]\)\=\|\%(#[ie]\)\=#x\)\%([+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\|[+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)@[+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\|[+-]\=\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\=[+-]\%(\%(\x\+#*/\x\+#*\%([sl][+-]\=\x\+\)\=\|\x\+#*\%([sl][+-]\=\x\+\)\=\)\)\=i\)\ze\%($\|[\()[\]'`,"; \t|:~&.!]\)? 
 
 syn match arcNumber display !\%(^\|[\()[\]'`,"; \t|]\)\@<=\%(#b\%(#[ie]\)\=\|\%(#[ie]\)\=#b\)\%(\%([+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|\%([01]\+#*\|\.[01]\+#*\|[01]\+\.[01]*#*\|[01]\+#\+\.#*\)\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)\|\%([+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|\%([01]\+#*\|\.[01]\+#*\|[01]\+\.[01]*#*\|[01]\+#\+\.#*\)\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)@\%([+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|\%([01]\+#*\|\.[01]\+#*\|[01]\+\.[01]*#*\|[01]\+#\+\.#*\)\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)\|\%([+-]\=\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|\%([01]\+#*\|\.[01]\+#*\|[01]\+\.[01]*#*\|[01]\+#\+\.#*\)\%([esfdl][+-]\=[01]\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)\=[+-]\%(\%([01]\+#*/[01]\+#*\%([esfdl][+-]\=[01]\+\)\=\|\%([01]\+#*\|\.[01]\+#*\|[01]\+\.[01]*#*\|[01]\+#\+\.#*\)\%([esfdl][+-]\=[01]\+\)\=\)\|inf\.0\|nan\.0\)\=i\)\ze\%($\|[\()[\]'`,"; \t|]\)! 
 syn match arcNumber display !\%(^\|[\()[\]'`,"; \t|]\)\@<=\%(#o\%(#[ie]\)\=\|\%(#[ie]\)\=#o\)\%(\%([+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\%(\o\+#*\|\.\o\+#*\|\o\+\.\o*#*\|\o\+#\+\.#*\)\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)\|\%([+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\%(\o\+#*\|\.\o\+#*\|\o\+\.\o*#*\|\o\+#\+\.#*\)\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)@\%([+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\%(\o\+#*\|\.\o\+#*\|\o\+\.\o*#*\|\o\+#\+\.#*\)\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)\|\%([+-]\=\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\%(\o\+#*\|\.\o\+#*\|\o\+\.\o*#*\|\o\+#\+\.#*\)\%([esfdl][+-]\=\o\+\)\=\)\|[+-]\%(inf\.0\|nan\.0\)\)\=[+-]\%(\%(\o\+#*/\o\+#*\%([esfdl][+-]\=\o\+\)\=\|\%(\o\+#*\|\.\o\+#*\|\o\+\.\o*#*\|\o\+#\+\.#*\)\%([esfdl][+-]\=\o\+\)\=\)\|inf\.0\|nan\.0\)\=i\)\ze\%($\|[\()[\]'`,"; \t|]\)! 
